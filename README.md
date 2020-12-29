@@ -1,3 +1,3 @@
 # AudioUnit Host
 
-AudioUnit host code
+AudioUnit host in C based.
