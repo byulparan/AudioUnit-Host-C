@@ -2,10 +2,10 @@
 #import <AudioUnit/AudioUnit.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <Cocoa/Cocoa.h>
-#import <signal.h>
 
 AudioUnit make_unit(int type, int subtype, int manufacturer);
 void display_unit(AudioUnit unit);
+
 int main(int argc, char* argv[]) {
 
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -33,13 +33,8 @@ int main(int argc, char* argv[]) {
   [appMenuItem setSubmenu: appMenu];
 
   AudioUnit unit = make_unit('aumu','Ni$D', '-NI-');
-
-  sigset_t new;
-  sigemptyset(&new);
-  //sigaddset(&new, SIGINT);
-  sigprocmask(SIG_SETMASK, &new, 0);
-
   display_unit(unit);
+  
   [NSApp run];
   [pool release];
   
@@ -73,21 +68,20 @@ AudioUnit make_unit(int type, int subtype, int manufacturer) {
     NSLog(@"can't make unit");
     exit(1);
   }
-
   
-  // AudioStreamBasicDescription format;  
+  AudioStreamBasicDescription format;  
 
-  // format.mFormatID = kAudioFormatLinearPCM;
-  // format.mFormatFlags = 41;
-  // format.mBytesPerPacket = 4;
-  // format.mBytesPerFrame = 4;
-  // format.mFramesPerPacket = 1;
-  // format.mBitsPerChannel = 32;
-  // format.mSampleRate = 44100.0;
-  // format.mChannelsPerFrame = 2;
-  // AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &format, sizeof(AudioStreamBasicDescription));
+  format.mFormatID = kAudioFormatLinearPCM;
+  format.mFormatFlags = 41;
+  format.mBytesPerPacket = 4;
+  format.mBytesPerFrame = 4;
+  format.mFramesPerPacket = 1;
+  format.mBitsPerChannel = 32;
+  format.mSampleRate = 44100.0;
+  format.mChannelsPerFrame = 2;
+  AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 0, &format, sizeof(AudioStreamBasicDescription));
 
-  // AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &format, sizeof(AudioStreamBasicDescription));
+  AudioUnitSetProperty(unit, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &format, sizeof(AudioStreamBasicDescription));
 
    AudioUnitInitialize(unit);
    AudioUnitReset(unit, kAudioUnitScope_Global, 0);
