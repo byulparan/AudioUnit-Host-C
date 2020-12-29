@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
   NSMenuItem* appMenuItem = [[NSMenuItem new] autorelease];
   [NSApp setMainMenu: menubar];
   [menubar addItem: appMenuItem];
-   
+
   NSMenu* appMenu = [[NSMenu new] autorelease];
   NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"Make_Unit"
 							action: @selector(terminate:)
