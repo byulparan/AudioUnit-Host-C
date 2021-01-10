@@ -7,134 +7,6 @@
 AudioUnit make_unit(int type, int subtype, int manufacturer);
 void display_unit(AudioUnit unit);
 
-
-void show_signals(const sigset_t exmask)
-{
-
-    int exsignals[43];
-
-    exsignals[0] = SIGABRT;
-    exsignals[1] = SIGALRM;
-    exsignals[2] = SIGBUS;
-    exsignals[3] = SIGCHLD;
-    exsignals[4] = SIGCONT;
-#ifdef SIGEMT
-    exsignals[5] = SIGEMT;
-#else
-    exsignals[5] = -1;
-#endif
-
-    exsignals[6] = SIGFPE;
-
-#ifdef SIGFREEZE
-    exsignals[7] = SIGFREEZE;
-#else
-    exsignals[7] = -1;
-#endif
-
-    exsignals[8] = SIGHUP;
-    exsignals[9] = SIGILL;
-#ifdef SIGINFO
-    exsignals[10] = SIGINFO;
-#else
-    exsignals[10] = -1;
-#endif
-
-    exsignals[11] = SIGINT;
-    exsignals[12] = SIGIO;
-    exsignals[13] = SIGIOT;
-
-#ifdef SIGJVM1
-    exsignals[14] = SIGJVM1;
-#else
-    exsignals[14] = -1;
-#endif
-#ifdef SIGJVM2
-    exsignals[15] = SIGJVM2;
-#else
-    exsignals[15] = -1;
-#endif
-
-    exsignals[16] = SIGKILL;
-#ifdef SIGLOST
-    exsignals[17] = SIGLOST;
-#else
-    exsignals[17] = -1;
-#endif
-
-#ifdef SIGLWP
-    exsignals[18] = SIGLWP;
-#else
-    exsignals[18] = -1;
-#endif
-
-    exsignals[19] = SIGPIPE;
-    exsignals[20] = -1;
-    exsignals[21] = SIGPROF;
-    exsignals[22] = -1;
-    exsignals[23] = SIGQUIT;
-    exsignals[24] = SIGSEGV;
-    exsignals[25] = -1;
-    exsignals[26] = SIGSTOP;
-    exsignals[27] = SIGSYS;
-    exsignals[28] = SIGTERM;
-#ifdef SIGTHAW
-    exsignals[29] = SIGTHAW;
-#else
-    exsignals[29] = -1;
-#endif
-#ifdef SIGTHR
-    exsignals[30] = SIGTHR;
-#else
-    exsignals[30] = -1;
-#endif
-    exsignals[31] = SIGTRAP;
-    exsignals[32] = SIGTSTP;
-    exsignals[33] = SIGTTIN;
-    exsignals[34] = SIGTTOU;
-    exsignals[35] = SIGURG;
-    exsignals[36] = SIGUSR1;
-    exsignals[37] = SIGUSR2;
-    exsignals[38] = SIGVTALRM;
-#ifdef SIGWAITING
-    exsignals[39] = SIGWAITING;
-#else
-    exsignals[39] = -1;
-#endif
-
-    exsignals[40] = SIGWINCH;
-    exsignals[41] = SIGXCPU;
-    exsignals[42] = SIGXFSZ;
-// #ifdef SIGXRES
-//     exsignals[43] = SIGXRES;
-// #else
-//     exsignals[43] = -1;
-// #endif
-
-    int exsignals_n = 0;
-
-    for (;exsignals_n < 43; exsignals_n++) {
-        if (exsignals[exsignals_n] == -1) continue;
-        static char *exsignal_name;
-        exsignal_name = strsignal(exsignals[exsignals_n]);
-        switch(sigismember(&exmask, exsignals[exsignals_n]))
-        {
-        case 0: break;
-        case 1: printf("YES %d\n", exsignals_n); break;
-        case -1: printf("could not obtain signal\n"); break;
-        default: printf("UNEXPECTED for %s return\n", exsignal_name); break;
-        }
-    }
-}
-const sigset_t getmask(void)
-{
-        static sigset_t retmask;
-        if ((sigprocmask(SIG_SETMASK, NULL, &retmask)) == -1)
-                printf("could not obtain process signal mask\n");
-
-        return retmask;
-}
-
 int main(int argc, char* argv[]) {
 
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
@@ -161,18 +33,9 @@ int main(int argc, char* argv[]) {
   [appMenu addItem: closeMenuItem];
   [appMenuItem setSubmenu: appMenu];
 
-  sigset_t masked = getmask();
   AudioUnit unit = make_unit('aumu','PRO3', 'Artu');
   display_unit(unit);
-  
-  sigprocmask(SIG_SETMASK, &masked, 0);
-  struct sigaction action;
-  action.sa_handler = SIG_DFL;
-  sigemptyset(&action.sa_mask);
-  action.sa_flags = 0;
-  sigaction(SIGINT, &action, 0);
-  show_signals(getmask());
-  
+    
   [NSApp run];
   [pool release];
   
