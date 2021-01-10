@@ -126,7 +126,7 @@ void display_unit(AudioUnit unit) {
 
   
   NSRect f = [pluginView frame];
-  NSRect frame = NSMakeRect(0, 400, f.size.width, f.size.height);
+  NSRect frame = NSMakeRect(0, 0, f.size.width, f.size.height);
 
   NSWindow* window  = [[NSWindow alloc] initWithContentRect:frame
 						  styleMask:NSWindowStyleMaskTitled |
