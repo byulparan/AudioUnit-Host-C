@@ -4,16 +4,40 @@
 #import <Cocoa/Cocoa.h>
 #import <signal.h>
 
+
+@interface AppDelegate : NSObject <NSApplicationDelegate> {
+
+}
+
+@property(nonatomic) AudioUnit unit;
+@end
+
+@implementation AppDelegate
+
+-(void)applicationWillTerminate:(NSNotification *)notification {	
+  AudioComponentInstanceDispose(self.unit);
+}
+
+-(BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {
+  return YES;
+}
+
+@end
+
+
 AudioUnit make_unit(int type, int subtype, int manufacturer);
 void display_unit(AudioUnit unit);
+
 
 int main(int argc, char* argv[]) {
 
   NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
   NSApp = [NSApplication sharedApplication];
 
+  AppDelegate* delegate = [[AppDelegate alloc] init];
+  [NSApp setDelegate: delegate];
+  
   [NSApp setActivationPolicy: NSApplicationActivationPolicyRegular];
-  [[NSProcessInfo processInfo] setProcessName: @"GUILE"];
 
   NSMenu* menubar = [[NSMenu alloc] initWithTitle: @"MainMenu"];
   NSMenuItem* appMenuItem = [[NSMenuItem new] autorelease];
@@ -21,7 +45,7 @@ int main(int argc, char* argv[]) {
   [menubar addItem: appMenuItem];
 
   NSMenu* appMenu = [[NSMenu new] autorelease];
-  NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"Make_Unit"
+  NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle: @"make_unit"
 							action: @selector(terminate:)
 						 keyEquivalent: @"q"];
 
@@ -34,6 +58,8 @@ int main(int argc, char* argv[]) {
   [appMenuItem setSubmenu: appMenu];
 
   AudioUnit unit = make_unit('aumu','PRO3', 'Artu');
+  delegate.unit = unit;
+  
   display_unit(unit);
     
   [NSApp run];
@@ -123,10 +149,10 @@ void display_unit(AudioUnit unit) {
 	CFRelease (info->mCocoaAUViewBundleLocation);
       }
   }
-
+  
   
   NSRect f = [pluginView frame];
-  NSRect frame = NSMakeRect(0, 0, f.size.width, f.size.height);
+  NSRect frame = NSMakeRect(0, 800, f.size.width, f.size.height);
 
   NSWindow* window  = [[NSWindow alloc] initWithContentRect:frame
 						  styleMask:NSWindowStyleMaskTitled |
