@@ -79,12 +79,12 @@ AudioUnit make_unit(int type, int subtype, int manufacturer) {
   audioDesc.componentFlagsMask = 0;
 
   AudioComponent found = AudioComponentFindNext(NULL, &audioDesc);
-  AudioComponentGetDescription(found, &audioDesc);
+  //AudioComponentGetDescription(found, &audioDesc);
     
-  if(!found) {
-    NSLog(@"can't found");
-    exit(1);
-  }
+  // if(!found) {
+  //   NSLog(@"can't found");
+  //   exit(1);
+  // }
 
   AudioUnit unit = NULL;
   AudioComponentInstanceNew(found, &unit);

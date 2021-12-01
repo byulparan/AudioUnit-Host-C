@@ -7,7 +7,7 @@ AudioUnit host in C based.
 It required CMake.
 
 ```
-$ mkdir build && cd build
-$ cmake ..
-$ make
+$ mkdir build
+$ cmake -B build
+$ cmake --build build
 ```
